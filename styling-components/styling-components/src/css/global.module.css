@@ -1,0 +1,12 @@
+.primary-btn {
+  background-color: red;
+  color: #fff;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 10px;
+}
+
+.button {
+  font-weight: 800;
+  color: yellow;
+}
