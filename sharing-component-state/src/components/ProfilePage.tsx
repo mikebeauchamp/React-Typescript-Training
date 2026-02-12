@@ -1,14 +1,6 @@
-interface Props {
-    user: {
-        id: number
-        name: string
-        role: string
-    }
+import { User } from '../types/user'
 
-    onNameUpdate: () => void
-}
-
-const ProfilePage = ({ user, onNameUpdate }: Props) => {
+const ProfilePage = ({ user, onNameUpdate }: User) => {
     return (
         <>
             <h1>Profile Page</h1>

@@ -1,13 +1,7 @@
-interface Props {
-    user: {
-        id: number
-        name: string
-        role: string
-    }
-}
+import { User } from '../types/user'
 
-const Navigation = ({ user }: Props) => {
-    return <div>Logged in user: {user.name}</div>
+const Navigation = ({ user }: User) => {
+    return <div>Logged in as: {user.name}</div>
 }
 
 export default Navigation
