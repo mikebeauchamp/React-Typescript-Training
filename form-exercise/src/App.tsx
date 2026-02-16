@@ -21,15 +21,36 @@ const App = () => {
     // useForm hook uses a resolver to validate the form data against the zod schema and returns an object with the form state, including any errors that may have occurred during validation
     const {
         register,
+        watch,
         handleSubmit,
         formState: { errors }
     } = useForm<FormData>({ resolver: zodResolver(schema) })
 
-    const onFormSubmit = (data: FieldValues) => {
-        console.log(data)
-    }
+    const onFormSubmit = (data: FieldValues) => console.log(data)
 
     console.log(errors)
+
+    const nameValue = watch('name')
+    const ageValue = watch('age')
+
+    const isNameValid = () => {
+        try {
+            //schema.shape.name.parse(name) is used to validate the name field against the zod schema. if the name field is valid, it will return true. if the name field is invalid, it will throw an error and return false.
+            schema.shape.name.parse(nameValue)
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const isAgeValid = () => {
+        try {
+            schema.shape.age.parse(ageValue)
+            return true
+        } catch (error) {
+            return false
+        }
+    }
 
     return (
         <>
@@ -62,6 +83,7 @@ const App = () => {
                             id="age"
                             placeholder="Enter Age"
                             className="border border-gray-200 px-4 py-2 rounded-xl"
+                            disabled={!isNameValid()}
                         />
 
                         {errors.age && (
@@ -69,7 +91,10 @@ const App = () => {
                         )}
                     </div>
 
-                    <button className="p-4 px-6 mt-4 bg-gray-800 text-white rounded-xl">
+                    <button
+                        className="p-4 px-6 mt-4 bg-gray-800 text-white rounded-xl disabled:opacity-50"
+                        disabled={!isNameValid() || !isAgeValid()}
+                    >
                         Save
                     </button>
                 </form>
