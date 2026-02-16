@@ -19,6 +19,7 @@ const App = () => {
 
                     {/* Tabs */}
                     <Tabs />
+
                     {/* Form */}
                     <AddJournalForm />
                 </div>
