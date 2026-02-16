@@ -1,3 +1,4 @@
+import AddJournalForm from './components/AddJournalForm'
 import Tabs from './components/Tabs'
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
                     {/* Tabs */}
                     <Tabs />
                     {/* Form */}
+                    <AddJournalForm />
                 </div>
             </div>
         </>
