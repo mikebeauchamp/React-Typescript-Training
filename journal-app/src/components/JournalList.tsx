@@ -11,34 +11,59 @@ const JournalList = () => {
         )
 
         setJournalEntries(entries)
-        console.log(entries)
     }, [])
 
-    const [journalEntries, setJournalEntries] = useState([
-        {
-            id: '',
-            title: '',
-            emotions: '',
-            content: '',
-            createdAt: ''
-        }
-    ])
+    const initJournalState = {
+        id: '',
+        title: '',
+        emotions: '',
+        content: '',
+        createdAt: ''
+    }
+
+    const [journalEntries, setJournalEntries] = useState([initJournalState])
+
+    const [journal, setJournal] = useState(initJournalState)
+
+    const onViewJournal = (journal: {
+        id: string
+        title: string
+        emotions: string
+        content: string
+        createdAt: string
+    }) => {
+        setJournal(journal)
+    }
 
     return (
         <>
-            <div className="grid grid-cols-2 gap-4">
-                {journalEntries.map(entry => (
-                    <div
-                        className="rounded-lg bg-white p-4 transition duration-300 ease-in-out hover:scale-110 hover:cursor-pointer hover:shadow-xl"
-                        key={entry.id}
-                    >
-                        <h3 className="mb-2 font-['Playfair_Display'] text-xl font-bold">
-                            {entry.title}
-                        </h3>
-                        <h4>Created at: {entry.createdAt}</h4>
-                    </div>
-                ))}
-            </div>
+            {journalEntries.length >= 1 && journal.id === '' && (
+                <div className="grid grid-cols-2 gap-4">
+                    {journalEntries.map(entry => (
+                        <div
+                            className="rounded-lg bg-white p-4 transition duration-300 ease-in-out hover:scale-110 hover:cursor-pointer hover:shadow-xl"
+                            key={entry.id}
+                            onClick={() => onViewJournal(entry)}
+                        >
+                            <h3 className="mb-2 font-['Playfair_Display'] text-xl font-bold">
+                                {entry.title}
+                            </h3>
+                            <h4>Created at: {entry.createdAt}</h4>
+                        </div>
+                    ))}
+                </div>
+            )}
+            {journal.id !== '' && (
+                <div className="relative flex max-h-[640px] flex-col overflow-y-scroll rounded-xl bg-white p-8">
+                    <h2 className="mb-2 font-['Playfair_Display'] text-4xl font-bold">
+                        {journal.title}
+                    </h2>
+                    <h3 className="mb-4 text-gray-400">
+                        Created at: {journal.createdAt}
+                    </h3>
+                    <p className="text-lg break-words">{journal.content}</p>
+                </div>
+            )}
         </>
     )
 }
