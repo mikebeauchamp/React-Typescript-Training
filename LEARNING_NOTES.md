@@ -274,6 +274,7 @@ const FormWithState = () => {
 | Validation feedback              | Not possible in real-time | Can show errors while typing |
 | Boilerplate code                 | Less code                 | More code                    |
 | React DevTools integration       | Not visible               | Visible in DevTools          |
+
 ---
 
 ## Zod - Schema Validation Library
@@ -298,36 +299,36 @@ Zod is a TypeScript-first schema validation library that allows you to define an
 To use Zod, you need to:
 
 1. Install Zod: \
-pm install zod\
+   pm install zod\
 2. Define a schema using Zod's schema builders
 3. Validate data against the schema using the \.parse()\ or \.safeParse()\ methods
 
 ### Code Example: Form Validation with Zod
 
-\\\	ypescript
+\\\ ypescript
 import { z } from 'zod'
 import { useState, type FormEvent } from 'react'
 
 // Define the validation schema
 const userFormSchema = z.object({
-    name: z.string().min(2, 'Name must be at least 2 characters'),
-    email: z.string().email('Invalid email address'),
-    age: z.number().min(18, 'Must be at least 18 years old').max(120, 'Invalid age'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+name: z.string().min(2, 'Name must be at least 2 characters'),
+email: z.string().email('Invalid email address'),
+age: z.number().min(18, 'Must be at least 18 years old').max(120, 'Invalid age'),
+password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
 // Infer TypeScript type from the schema
 type UserFormData = z.infer<typeof userFormSchema>
 
 const UserForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        age: '',
-        password: '',
-    })
-    const [errors, setErrors] = useState<Record<string, string>>({})
-    const [success, setSuccess] = useState(false)
+const [formData, setFormData] = useState({
+name: '',
+email: '',
+age: '',
+password: '',
+})
+const [errors, setErrors] = useState<Record<string, string>>({})
+const [success, setSuccess] = useState(false)
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target
@@ -426,14 +427,15 @@ const UserForm = () => {
             <button type="submit">Submit</button>
         </form>
     )
+
 }
 \\\
 
 ### Key Zod Methods
 
-- **\.parse(data)\**: Validates data and throws an error if validation fails. Use when you expect validation to succeed.
-- **\.safeParse(data)\**: Validates data and returns a result object with \success\ and \data\ or \error\ properties. Use when you want to handle errors gracefully.
-- **\z.infer<typeof schema>\**: Extracts the TypeScript type from a Zod schema, ensuring your code stays in sync with your validation rules.
+- \*\*\.parse(data)\*\*: Validates data and throws an error if validation fails. Use when you expect validation to succeed.
+- \*\*\.safeParse(data)\*\*: Validates data and returns a result object with \success\ and \data\ or \error\ properties. Use when you want to handle errors gracefully.
+- \*\*\z.infer<typeof schema>\*\*: Extracts the TypeScript type from a Zod schema, ensuring your code stays in sync with your validation rules.
 
 ### Why Zod is Useful in React Forms
 
@@ -442,3 +444,61 @@ const UserForm = () => {
 3. **Type Inference**: Automatically generates correct TypeScript types, reducing manual type definitions.
 4. **Prevents Data Corruption**: Ensures only valid data reaches your application logic or API.
 5. **Integrates with Form Libraries**: Works perfectly with React Hook Form, Formik, and other form management libraries.
+
+---
+
+## useEffect Hook - Side Effects in React
+
+### What is useEffect?
+
+`useEffect` is a React hook that allows you to perform side effects in functional components. Side effects are operations that interact with the outside world, such as fetching data from an API, subscribing to events, manipulating the DOM, setting timers, or logging. useEffect runs after the component renders and can run multiple times depending on its dependency array.
+
+### When is useEffect Used?
+
+- **Data Fetching**: Fetch data from an API when a component mounts
+- **Subscriptions**: Subscribe to events or data sources
+- **DOM Manipulation**: Update the DOM after rendering
+- **Timers**: Set up intervals or timeouts
+- **Cleanup**: Perform cleanup operations when a component unmounts
+- **Tracking Changes**: React to prop or state changes
+
+### Code Example
+
+```typescript
+import { useEffect, useState } from 'react'
+
+const DataFetchComponent = () => {
+    const [data, setData] = useState<string>('')
+
+    useEffect(() => {
+        // This effect runs after the component renders
+        console.log('Component mounted or dependencies changed')
+
+        // Simulate fetching data from an API
+        const fetchData = async () => {
+            const response = await fetch('https://api.example.com/data')
+            const result = await response.json()
+            setData(result)
+        }
+
+        fetchData()
+
+        // Optional cleanup function
+        return () => {
+            console.log('Cleanup: Component is unmounting or effect is re-running')
+        }
+    }, []) // Empty dependency array
+
+    return <div>{data || 'Loading...'}</div>
+}
+```
+
+### The Empty Dependency Array `[]`
+
+The empty dependency array `[]` is crucial for controlling when `useEffect` runs:
+
+- **`useEffect(() => { ... })`** (no dependency array): Runs after every render
+- **`useEffect(() => { ... }, [])`** (empty array): Runs only once after the initial render
+- **`useEffect(() => { ... }, [dep1, dep2])`** (with dependencies): Runs when any dependency changes
+
+In the code example above, the empty array `[]` ensures that the effect runs only once, when the component first mounts. This prevents the effect from fetching data repeatedly on every render, which would create unnecessary API calls and performance issues. Without the empty array, the effect would run infinitely, causing the component to fetch data after every render.

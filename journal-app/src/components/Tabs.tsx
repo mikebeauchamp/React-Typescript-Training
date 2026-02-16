@@ -1,10 +1,17 @@
 import { useState } from 'react'
 
-const Tabs = () => {
+interface Props {
+    onTabChange?: (tab: string) => void
+}
+
+const Tabs = ({ onTabChange }: Props) => {
     const [selectedTab, setSelectedTab] = useState('add')
 
     const handleTabClick = (tab: string) => {
         setSelectedTab(tab)
+        if (onTabChange) {
+            onTabChange(tab)
+        }
     }
 
     return (
