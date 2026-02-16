@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
-import { set } from 'zod'
+import { ImHappy2 } from 'react-icons/im'
+import { ImNeutral2 } from 'react-icons/im'
+import { ImSad2 } from 'react-icons/im'
 
 const JournalList = () => {
     //useeffect is a React hook that allows you to perform side effects in function components. In this case, we are using it to retrieve journal entries from local storage when the component mounts. The empty dependency array [] ensures that this effect runs only once when the component is first rendered. the useEffect hook runs after the component has rendered, so it will log the entries to the console after they have been retrieved from local storage. This is useful for debugging and verifying that the entries are being stored and retrieved correctly.
@@ -35,6 +37,17 @@ const JournalList = () => {
         setJournal(journal)
     }
 
+    const closeJournal = () => {
+        setJournal(initJournalState)
+    }
+
+    const deleteJournal = (id: string) => {
+        const updatedEntries = journalEntries.filter(entry => entry.id !== id)
+        setJournalEntries(updatedEntries)
+        localStorage.setItem('journalEntries', JSON.stringify(updatedEntries))
+        closeJournal()
+    }
+
     return (
         <>
             {journalEntries.length >= 1 && journal.id === '' && (
@@ -53,15 +66,52 @@ const JournalList = () => {
                     ))}
                 </div>
             )}
+
+            {journalEntries.length === 0 && (
+                <div className="w-full rounded-xl bg-white p-3 text-center font-medium">
+                    There are no journal entries.
+                </div>
+            )}
+
             {journal.id !== '' && (
-                <div className="relative flex max-h-[640px] flex-col overflow-y-scroll rounded-xl bg-white p-8">
-                    <h2 className="mb-2 font-['Playfair_Display'] text-4xl font-bold">
+                <div className="relative flex max-h-[640px] flex-col overflow-x-hidden overflow-y-auto rounded-xl bg-white p-8">
+                    {journal.emotions === 'Happy' ? (
+                        <ImHappy2
+                            size={128}
+                            className="absolute -top-3 -right-8 z-0 text-gray-200"
+                        />
+                    ) : journal.emotions === 'Neutral' ? (
+                        <ImNeutral2
+                            size={128}
+                            className="absolute -top-3 -right-8 z-0 text-gray-200"
+                        />
+                    ) : (
+                        <ImSad2
+                            size={128}
+                            className="absolute -top-3 -right-8 z-0 text-gray-200"
+                        />
+                    )}
+                    <h2 className="z-10 mb-2 font-['Playfair_Display'] text-4xl font-bold">
                         {journal.title}
                     </h2>
                     <h3 className="mb-4 text-gray-400">
                         Created at: {journal.createdAt}
                     </h3>
                     <p className="text-lg break-words">{journal.content}</p>
+                    <div className="flex justify-between gap-2">
+                        <button
+                            className="btn mt-2 flex-1"
+                            onClick={() => deleteJournal(journal.id)}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className="btn btn-secondary mt-2 flex-1"
+                            onClick={closeJournal}
+                        >
+                            Close
+                        </button>
+                    </div>
                 </div>
             )}
         </>
