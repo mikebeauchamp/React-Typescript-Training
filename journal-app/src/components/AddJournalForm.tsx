@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type FieldValues } from 'react-hook-form'
 import { z } from 'zod'
+import SuccessModal from './SuccessModal'
 
 const schema = z.object({
     title: z
@@ -47,12 +48,24 @@ const AddJournalForm = () => {
         const updatedEntries = [...existingEntries, data]
         localStorage.setItem('journalEntries', JSON.stringify(updatedEntries))
 
+        openSuccessModal()
+
         //reset the form fields after submission to clear the form for the next entry. This provides a better user experience by allowing users to quickly add multiple entries without manually clearing the form.
         reset()
     }
 
+    const openSuccessModal = () => {
+        const modal = document.getElementById(
+            'success_modal'
+        ) as HTMLDialogElement
+        if (modal) {
+            modal.showModal()
+        }
+    }
+
     return (
         <>
+            <SuccessModal />
             <form
                 className="flex flex-col gap-3"
                 onSubmit={handleSubmit(onFormSubmit)}
