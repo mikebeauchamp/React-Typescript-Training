@@ -1,4 +1,4 @@
-import apiClient from './api-client'
+import createService from './global-http-service.ts'
 
 export interface User {
     id: string
@@ -8,27 +8,4 @@ export interface User {
     email: string
 }
 
-class UserService {
-    async getUsers(signal?: AbortSignal): Promise<User[]> {
-        const response = await apiClient.get<User[]>('/users/random/3', {
-            signal
-        })
-        return response.data
-    }
-
-    async deleteUser(id: string): Promise<void> {
-        await apiClient.delete(`/users/${id}`)
-    }
-
-    async createUser(user: User): Promise<User> {
-        const response = await apiClient.post<User>('/users', user)
-        return response.data
-    }
-
-    async updateUser(user: User): Promise<User> {
-        const response = await apiClient.patch<User>(`/users/${user.id}`, user)
-        return response.data
-    }
-}
-
-export default new UserService()
+export default createService('/users')

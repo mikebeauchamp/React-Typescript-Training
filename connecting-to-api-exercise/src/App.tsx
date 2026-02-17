@@ -13,7 +13,7 @@ const App = () => {
         const fetchUsers = async () => {
             try {
                 setLoading(true)
-                const users = await userService.getUsers(controller.signal)
+                const users = await userService.getAll<User>(controller.signal)
                 setUsers(users)
             } catch (error) {
                 if (error instanceof CanceledError) return
@@ -40,7 +40,7 @@ const App = () => {
     //Delete user from list
     const deleteUser = (user: User) => {
         setUsers(users.filter(u => u.id !== user.id))
-        userService.deleteUser(user.id)
+        userService.delete(user.id)
     }
 
     const addUser = async () => {
@@ -54,7 +54,7 @@ const App = () => {
         setUsers([newUser, ...users])
 
         try {
-            const createdUser = await userService.createUser(newUser)
+            const createdUser = await userService.createUser<User>(newUser)
             setUsers(prevUsers =>
                 prevUsers.map(user => (user === newUser ? createdUser : user))
             )
@@ -69,7 +69,7 @@ const App = () => {
         setUsers(users.map(u => (u.id === user.id ? updatedUser : u)))
 
         try {
-            await userService.updateUser(updatedUser)
+            await userService.updateUser<User>(updatedUser)
         } catch (error) {
             setError((error as AxiosError).message)
             setUsers(users.map(u => (u.id === user.id ? user : u)))
