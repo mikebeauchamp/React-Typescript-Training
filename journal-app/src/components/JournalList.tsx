@@ -23,8 +23,12 @@ const JournalList = () => {
         createdAt: ''
     }
 
+    // Stores all journal entries retrieved from localStorage. Used to display the grid of all available entries.
+    // This state is updated when entries are fetched, deleted, or modified.
     const [journalEntries, setJournalEntries] = useState([initJournalState])
 
+    // Stores the currently selected/viewed journal entry. When empty (id === ''), the grid is displayed.
+    // When populated with an entry, the detail view is shown. This allows users to switch between list and detail views.
     const [journal, setJournal] = useState(initJournalState)
 
     const onViewJournal = (journal: {
