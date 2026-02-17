@@ -79,6 +79,21 @@ const App = () => {
         }
     }
 
+    const updateUser = async (user: User) => {
+        const updatedUser = { ...user, first_name: 'Updated' }
+        setUsers(users.map(u => (u.id === user.id ? updatedUser : u)))
+
+        try {
+            await axios.patch(
+                `https://jsonfakery.com/users/${user.id}`,
+                updatedUser
+            )
+        } catch (error) {
+            setError((error as AxiosError).message)
+            setUsers(users.map(u => (u.id === user.id ? user : u)))
+        }
+    }
+
     return (
         <>
             {error && <p className="text-red-500">{error}</p>}
@@ -86,9 +101,9 @@ const App = () => {
             <ul className="w-1/2 divide-y divide-gray-300">
                 <button
                     className="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-700 mb-2"
-                    onClick={addUser}
+                    onClick={() => addUser()}
                 >
-                    Create User{' '}
+                    Create User
                 </button>
                 {users.map(user => (
                     <li
@@ -96,12 +111,20 @@ const App = () => {
                         className="flex justify-between leading-loose py-1"
                     >
                         {user.first_name} {user.middle_name} {user.last_name}
-                        <button
-                            className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-700"
-                            onClick={() => deleteUser(user)}
-                        >
-                            Delete
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                className="bg-white text-green-500 border border-green-500 px-4 py-1 rounded-lg hover:bg-green-500 hover:text-white"
+                                onClick={() => updateUser(user)}
+                            >
+                                Update
+                            </button>
+                            <button
+                                className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-700"
+                                onClick={() => deleteUser(user)}
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>
