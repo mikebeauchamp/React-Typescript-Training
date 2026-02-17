@@ -8,7 +8,16 @@ const TaskList = ({ task }: { task: string }) => {
         setTasks(['Vacuum Floor', 'Wash Dishes', 'Do Laundry'])
     }, [task])
 
-    return <div>TaskList</div>
+    return (
+        <div>
+            <h2>TaskList</h2>
+            <ul>
+                {tasks.map(t => (
+                    <li key={t}>{t}</li>
+                ))}
+            </ul>
+        </div>
+    )
 }
 
 export default TaskList

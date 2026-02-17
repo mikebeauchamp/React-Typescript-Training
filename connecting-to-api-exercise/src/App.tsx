@@ -1,13 +1,6 @@
-import axios, { AxiosError, CanceledError } from 'axios'
 import { useEffect, useState } from 'react'
-
-interface User {
-    id: string
-    first_name: string
-    middle_name: string
-    last_name: string
-    email: string
-}
+import { CanceledError, AxiosError } from './services/api-client'
+import userService, { type User } from './services/user-service'
 
 const App = () => {
     const [users, setUsers] = useState<User[]>([])
@@ -16,27 +9,23 @@ const App = () => {
 
     useEffect(() => {
         const controller = new AbortController()
+
         const fetchUsers = async () => {
             try {
                 setLoading(true)
-                const response = await axios.get<User[]>(
-                    'https://jsonfakery.com/users/random/3',
-                    { signal: controller.signal }
-                )
-                setUsers(response.data)
-                setLoading(false)
+                const users = await userService.getUsers(controller.signal)
+                setUsers(users)
             } catch (error) {
                 if (error instanceof CanceledError) return
                 setError((error as AxiosError).message)
+            } finally {
                 setLoading(false)
             }
         }
 
         fetchUsers()
 
-        return () => {
-            controller.abort()
-        }
+        return () => controller.abort()
 
         // axios
         //     .get<User[]>('https://jsonfakery.com/usersss/random/3')
@@ -51,7 +40,7 @@ const App = () => {
     //Delete user from list
     const deleteUser = (user: User) => {
         setUsers(users.filter(u => u.id !== user.id))
-        axios.delete(`https://jsonfakery.com/users/${user.id}`)
+        userService.deleteUser(user.id)
     }
 
     const addUser = async () => {
@@ -65,11 +54,7 @@ const App = () => {
         setUsers([newUser, ...users])
 
         try {
-            const response = await axios.post(
-                'https://jsonfakery.com/users',
-                newUser
-            )
-            const createdUser = response.data
+            const createdUser = await userService.createUser(newUser)
             setUsers(prevUsers =>
                 prevUsers.map(user => (user === newUser ? createdUser : user))
             )
@@ -84,10 +69,7 @@ const App = () => {
         setUsers(users.map(u => (u.id === user.id ? updatedUser : u)))
 
         try {
-            await axios.patch(
-                `https://jsonfakery.com/users/${user.id}`,
-                updatedUser
-            )
+            await userService.updateUser(updatedUser)
         } catch (error) {
             setError((error as AxiosError).message)
             setUsers(users.map(u => (u.id === user.id ? user : u)))
